@@ -1,7 +1,7 @@
 <?php
     session_start();
     include('connect.php');
-    include("administratorHeader.php");
+    include("includes/administratorHeader.php");
 //     if ($_SERVER["REQUEST_METHOD"] == "POST"){
 //         if (isset($_POST['create'])){
 //             createEvent();
@@ -16,56 +16,37 @@
 ?>
 <?php
 	if(isset($_POST['create'])){
- 		// $eventid=$_POST['eventid'];
-		$eventtitle=$_POST['eventName'];
-        // $adminid=$_POST['adminid'];
-		$eventdesc=$_POST['eventDescription'];
+        $eventtitle=$_POST['eventName'];
+        $eventdesc=$_POST['eventDescription'];
         $eventvenue=$_POST['eventVenue'];
         $eventfee=$_POST['eventFee'];
         $date=$_POST['eventDate'];
         $time=$_POST['eventTime'];
-
+    
         // Get adminid from session
         $adminid = $_SESSION['adminid'];
-
-		//save data to tblevent
-		$sql1 ="Insert into tblevent(eventtitle,adminid,eventdescription,eventvenue,eventfee,date,time) values('".$eventtitle."','".$adminid."','".$eventdesc."','".$eventvenue."','".$eventfee."','".$date."','".$time."')";
-		mysqli_query($connection,$sql1); 
-	}
+        
+        // Save data to tblevent
+        $sql1 = "INSERT INTO tblevent (eventtitle, adminid, eventdescription, eventvenue, eventfee, date, time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $connection->prepare($sql1);
+        $stmt->bind_param("sisssss", $eventtitle, $adminid, $eventdesc, $eventvenue, $eventfee, $date, $time);
+        $stmt->execute();
+    
+        // Get the auto-generated eventid
+        $eventid = mysqli_insert_id($connection);
+    
+        // Save adminid and eventid to tbladminevent
+        $sql2 = "INSERT INTO tbladminevent (adminid, eventid) VALUES (?, ?)";
+        $stmt2 = $connection->prepare($sql2);
+        $stmt2->bind_param("ii", $adminid, $eventid);
+        $stmt2->execute();
+    
+        $stmt->close();
+        $stmt2->close();
+    }
 ?>
 
-<link rel="stylesheet" type="text/css" href="css/teknoStyles.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<head>
-<style>
 
-    body{
-         /* background-image: url('images/background/.png'); */
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-        background-position: center;
-        background-attachment: fixed;
-        color:black;
-    }
-
-    .nav a{
-        color: black;
-        text-decoration: none;
-        background-color: white;
-        border-radius: 5px
-    }
-
-    .nav a:hover{
-        color: white;
-        background-color: rgb(54, 79, 82);
-        transition: 0.1s ease-in;
-    }
-    hr{
-        margin:0;
-    }
-
-</style>
-</head>
 <div class="create-container">
     <div class="create-inner-container">
 
@@ -155,7 +136,7 @@
                 if (isset($_POST['cancel'])) {
                     // Retrieve the event ID from the form submission
                     $eventid = $_POST['eventid'];
-
+                    
                     // Debugging: Echo the event ID to see if it's properly retrieved
                     echo "Event ID: " . $eventid;
 

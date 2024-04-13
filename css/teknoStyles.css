@@ -485,7 +485,7 @@ input[type="submit"]:hover{
 .all-events{
     display: inline-block; 
     width: 680px; 
-    height: 260px; 
+    height: 230px; 
     border: 1px solid black; 
     margin-top: 25px; 
     padding: 10px; 

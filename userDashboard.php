@@ -36,7 +36,7 @@
     </style>
 <div id="content-placeholder">
   <?php
-  session_start();
+  
       // echo allEvents();
     $conn = new mysqli('localhost','root','', 'dbabellanaf2');
     function getEventDetails($conn) {

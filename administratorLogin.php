@@ -24,6 +24,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/notification.css">
     <title>TeknoEvents Login</title>
+    <style>
+        .header-container {
+            background-color: #800000;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .toggle-panel {
+            background-color: #800000;
+        }
+    </style>
 </head>
 
 <div class="container" id="container">

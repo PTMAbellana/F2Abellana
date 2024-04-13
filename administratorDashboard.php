@@ -7,7 +7,7 @@
   // include("administratorApi.php");
   // include("administratorHeader.php");
   include 'connect.php';
-  include("administratorHeader.php");
+  include("includes/administratorHeader.php");
 ?>
 
 <div id="content-placeholder">
