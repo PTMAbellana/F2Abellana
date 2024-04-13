@@ -132,26 +132,33 @@
                 // echo adminEvents();
             ?>
             <?php
-                // Check if the cancel button is clicked
                 if (isset($_POST['cancel'])) {
                     // Retrieve the event ID from the form submission
                     $eventid = $_POST['eventid'];
                     
                     // Debugging: Echo the event ID to see if it's properly retrieved
                     echo "Event ID: " . $eventid;
-
+                
+                    // Delete related records in tbladminevent first
+                    $delete_adminevent_sql = "DELETE FROM tbladminevent WHERE eventid = ?";
+                    $delete_adminevent_stmt = $connection->prepare($delete_adminevent_sql);
+                    $delete_adminevent_stmt->bind_param("i", $eventid);
+                    $delete_adminevent_stmt->execute();
+                    $delete_adminevent_stmt->close();
+                
                     // Delete the event from the tblevent table
                     $sql = "DELETE FROM tblevent WHERE eventid = $eventid";
-
+                
                     // Debugging: Echo the SQL query to see if it's constructed correctly
                     echo "SQL Query: " . $sql;
-
+                
                     if ($connection->query($sql) === TRUE) {
                         echo "Event canceled successfully";
                     } else {
                         echo "Error canceling event: " . $connection->error;
                     }
                 }
+                
             ?>
 
             <?php
