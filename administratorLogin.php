@@ -64,7 +64,7 @@
         if($count== 0){
             echo "<div class='message-box error'>Username not existing.</div>";
         }
-        else if(password_verify($pwd, $row[2])){
+        else if(password_verify($pwd, $row[3])){
             $_SESSION['username'] = $row['username'];
             $_SESSION['adminid'] = $row['adminid'];
             header("location: administratorDashboard.php");

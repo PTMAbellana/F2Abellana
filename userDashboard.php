@@ -36,6 +36,7 @@
     </style>
 <div id="content-placeholder">
   <?php
+  session_start();
       // echo allEvents();
     $conn = new mysqli('localhost','root','', 'dbabellanaf2');
     function getEventDetails($conn) {
@@ -50,7 +51,6 @@
         if ($result->num_rows > 0) {
             // Loop through each row
             while ($row = $result->fetch_assoc()) {
-              
                 // Output event details
                 echo '
                     <div class="all-events">
@@ -58,13 +58,18 @@
                     <h2>' . $row['eventtitle'] . '</h2>
                     </center>
                     <hr style="margin-top:10;margin-bottom:10;">
-                    <p>◦  Administrator: ' . $row['adminName'] . '</p>
+                    <p>◦ Administrator: ' . $row['adminName'] . '</p>
                     <p>◦ Description: ' . $row['eventdescription'] . '</p>
                     <p>◦ Venue: ' . $row['eventvenue'] . '</p>
                     <p>◦ Fee: $' . $row['eventfee'] . '</p>
                     <p>◦ Date: ' . $row['date'] . '</p>
                     <p>◦ Time: ' . $row['time'] . '</p>
-                    <input type="submit" name="submit" value="Request to Join">
+                    <form method="POST" action="joinEvent.php">
+                      <input type="hidden" name="eventid" value="' . $row['eventid'] . '">
+                      <input type="hidden" name="acctid" value="' . $_SESSION['acctid'] . '">
+                      <input type="hidden" name="joinEvent" value="true">
+                      <input type="submit" name="submit" value="Request to Join" onclick="return confirm(\'Are you sure you want to request to join this event?\')" <?php if($eventIsJoined) echo "disabled"; ?>>
+                    </form>
                     </div>
                 ';
             }

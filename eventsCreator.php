@@ -111,9 +111,6 @@
                 function getEventDetails($conn) {
                     // Get the adminid of the current administrator from session
                         $adminid = $_SESSION['adminid'];
-                        
-                        
-                    
                         // Query to fetch only the events created by the current administrator
                         $query = "SELECT * FROM tblevent WHERE adminid = '$adminid'";
                         $result = $conn->query($query);

@@ -68,6 +68,7 @@
         }
         else if(password_verify($pwd, $row[3])){
             $_SESSION['username'] = $row['username'];
+            $_SESSION['acctid'] = $row['acctid'];
             header("location: home.php");
         }
         else{
