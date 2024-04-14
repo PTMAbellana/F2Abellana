@@ -1,6 +1,10 @@
 <?php
     session_start();
     include 'connect.php';
+    include("userApi.php");
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        toLogin();
+    }
 ?>
 <head>
     <link rel="icon" type="image/x-icon" href="images/TeknoLogo4.png">
@@ -8,7 +12,6 @@
 
 <header class="header-container">
     <div class="nav-container">
-        <!-- <h2>TeknoEvents</h2> -->
         <div class="row">
             <img src="images/TeknoLogo3.png", height = 40 width = 200/>
         </div>
@@ -34,8 +37,6 @@
             <input type="password" name="txtpassword" placeholder="Password">
             <input type="submit" name="btnLogin" value="Login">
             <h5>Are you an Admin? <a href = "administratorLogin.php">Login</a></h5> 
-            
-
         </form>
     </div>
     <div class="toggle-container">
@@ -50,35 +51,5 @@
         </div>
     </div>
 </div>
-
-<script src="js/notification.js"></script>
-
-<?php
-    if(isset($_POST['btnLogin'])){
-        $uname=$_POST['txtusername'];
-        $pwd=$_POST['txtpassword'];
-        //check tbluseraccount if username is existing
-        $sql ="Select * from tbluseraccount where username='".$uname."'";
-        $result = mysqli_query($connection,$sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_array($result);
-        if($count== 0){
-            echo "<div class='message-box error'>Username not existing.</div>";
-            //echo '<script>showNotification("Username not existing.");</script>'; //for future
-        }
-        else if(password_verify($pwd, $row[3])){
-            $_SESSION['username'] = $row['username'];
-            $_SESSION['acctid'] = $row['acctid'];
-            header("location: home.php");
-        }
-        else{
-            echo "<div class='message-box error'>Incorrect password.</div>";
-        }
-    }
-    
-?>
-
-<?php
-    require_once 'includes/footer.php';
-?>
+<?php require_once 'includes/footer.php'; ?>
 
