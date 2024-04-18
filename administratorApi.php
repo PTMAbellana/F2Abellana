@@ -102,6 +102,7 @@
 
     function adminEvents() {
         global $connection;
+        global $adminid;
         // Get the adminid of the current administrator from session
             $adminid = $_SESSION['adminid'];
             // Query to fetch only the events created by the current administrator
@@ -119,7 +120,9 @@
                 // Output event details
                 echo '
                     <div class="the-event">
-                        <h2>' . $row['eventtitle'] . '</h2>
+                        <a href="events.php?eventid='.$row['eventid'].'">
+                            <h2 style="margin: 0;">'. $row['eventtitle'] .'</h2>
+                        </a>
                         <hr style="margin-top:10;margin-bottom:10;">
                         <p>◦  Administrator: ' . $row_name['name'] . '</p>
                         <p>◦ Description: ' . $row['eventdescription'] . '</p>

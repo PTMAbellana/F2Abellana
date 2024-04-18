@@ -103,7 +103,9 @@
                 echo '
                     <div class="all-events">
                     <center>
-                    <h2>' . $row['eventtitle'] . '</h2>
+                    <a href="events.php?eventId='.$row['eventId'].'">
+                        <h2>' . $row['eventtitle'] . '</h2>
+                    </a>
                     </center>
                     <hr style="margin-top:10;margin-bottom:10;">
                     <p>◦ Administrator: ' . $row['adminName'] . '</p>
