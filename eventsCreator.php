@@ -18,9 +18,7 @@
 
 <div class="create-container">
     <div class="create-inner-container">
-
         <h2>Create New Event</h2>
-
         <form id="eventForm" action="" method="POST" >
             <div class="txt_field">
                 <input type="text" id="eventName" name="eventName" method="POST" required>
@@ -36,7 +34,7 @@
                 <label for="eventVenue">Venue: </label>
             </div>
             <div class="txt_field">
-                <input type="text" id="eventFee" name="eventFee" method="POST" required>
+                <input type="text" id="eventFee" name="eventFee" m ethod="POST" required>
                 <label for="eventFee">Fee: </label>
             </div>
             <div class="txt_field">

@@ -28,7 +28,7 @@
 </head>
 
 <div class="container" id="container" style="max-width: ; margin: 20px auto; height: auto ;">
-    <div class="form-container sign-in" style="overflow-y: auto; max-height: 450px;">
+    <div class="form-container sign-in" style="overflow-y: auto; max-height: 500px;">
         <form method="post">
             <h1>Create Account</h1>
             <span>using your school details</span>

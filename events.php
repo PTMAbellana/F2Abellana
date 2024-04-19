@@ -77,28 +77,39 @@
             // Now you have $eventDetail containing all details of the event with eventid = $eventId
             // Display the event details and form for editing
 ?>
-            <div class="overview-container">
-                <h1 id="eventTitle"><?= $eventDetail['eventtitle'] ?></h1>
-                <hr color="white">
-                <div class="overview-inner-container">
-                    <div class="overview-details" id="eventDetails">
+            <div class="edit-container">
+                <h1 id="eventTitle" style="color:white; text-align:center;"><?= $eventDetail['eventtitle'] ?></h1>
+                    <div class="edit-inner-container" id="eventDetails">
                         <form method="POST" action="">
-                            <p>Event Description:</p>
-                            <textarea name="eventDescription" placeholder="<?= $eventDetail['eventdescription'] ?>"></textarea>
-                            <p>Event Venue:</p>
-                            <input type="text" name="eventVenue" placeholder="<?= $eventDetail['eventvenue'] ?>">
-                            <p>Event Fee:</p>
-                            <input type="text" name="eventFee" placeholder="<?= $eventDetail['eventfee'] ?>">
-                            <p>Date:</p>
-                            <input type="date" name="eventDate" placeholder="<?= $eventDetail['eventdate'] ?>">
-                            <p>Time:</p>
-                            <input type="time" name="eventTime" placeholder="<?= $eventDetail['eventtime'] ?>">
+                            <div class="txt_field">
+                                <input type="text" name="eventDescription" placeholder="<?= $eventDetail['eventdescription'] ?>">
+                                <label for="eventDescription">Description: </label>
+                            </div>
+                            <div class="txt_field">
+                                <input type="text" name="eventVenue" placeholder="<?= $eventDetail['eventvenue'] ?>">
+                                <label for="eventVenue">Venue: </label>
+                            </div>
+                            <div class="txt_field">
+                                <input type="text" name="eventFee" placeholder="<?= $eventDetail['eventfee'] ?>">
+                                <label for="eventFee">Fee: </label>
+                            </div>
+                            <div class="txt_field">
+                                <input type="date" name="eventDate" placeholder="<?= $eventDetail['date'] ?>">
+                                <label for="eventDate">Date: </label>
+                            </div>
+                            <div class="txt_field">
+                                <input type="time" name="eventTime" placeholder="<?= $eventDetail['time'] ?>">
+                                <label for="eventTime">Time: </label>
+                            </div>
                             <input type="hidden" name="eventId" value="<?= $eventId ?>">
                             <br>
-                            <button type="submit" name="saveChanges">Save Changes</button>
+                            <input type="submit" value="Save Changes"name="saveChanges">
+                                
+                            <a href="eventsCreator.php" class="back-link">Back to Events</a>
+                            
                         </form>
                     </div>
-                </div>
+                
             </div>
 <?php 
         } else {

@@ -103,7 +103,7 @@
                 echo '
                     <div class="all-events">
                     <center>
-                    <a href="events.php?eventId='.$row['eventId'].'">
+                    <a href="events.php?eventId='.$row['eventid'].'">
                         <h2>' . $row['eventtitle'] . '</h2>
                     </a>
                     </center>
