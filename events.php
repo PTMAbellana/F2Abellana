@@ -105,7 +105,7 @@
                             <br>
                             <input type="submit" value="Save Changes"name="saveChanges">
                                 
-                            <a href="eventsCreator.php" class="back-link">Back to Events</a>
+                            <a href="administratorEventsCreator.php" class="back-link">Back to Events</a>
                             
                         </form>
                     </div>

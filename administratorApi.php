@@ -24,6 +24,7 @@
                     // Admin authentication successful, store admin details
                     $stored_admin = $adminData;
                     $_SESSION['username'] = $adminData['username'];
+                    $_SESSION['name'] = $adminData['name'];
                     $_SESSION['adminid'] = $adminData['adminid'];
                     header("location: administratorDashboard.php");
                     exit();
@@ -32,6 +33,7 @@
             echo "<div class='message-box error'>Incorrect username or password.</div>";
         }
     }
+
     function createEvent(){
         global $connection, $stored_events;
         $lastEvent = end($stored_events);
@@ -65,6 +67,7 @@
             $stmt2->close();
         }
     }
+
     function allEvents() {
         global $stored_admin, $connection, $stored_events;
         // Query to fetch event details from the database
@@ -81,7 +84,7 @@
               
                 // Output event details
                 echo '
-                    <div class="the-event">
+                    <div class="the-event" style="width: 80%;">
                         <center>
                         <h2>' . $row['eventtitle'] . '</h2>
                         </center>
@@ -96,7 +99,11 @@
                 ';
             }
         } else {
-            echo 'No events found.';
+            echo '
+                <div class="body-container" style="height: 80vh; text-align: center;">
+                    No events found. Sad :(
+                </div>
+            ';
         }
     }
 
@@ -117,31 +124,73 @@
                 $result_name = $connection->query($query_name);
                 $row_name = $result_name->fetch_assoc();
 
-                // Output event details
-                echo '
-                    <div class="the-event">
-                        <a href="events.php?eventid='.$row['eventid'].'">
-                            <h2 style="margin: 0;">'. $row['eventtitle'] .'</h2>
-                        </a>
-                        <hr style="margin-top:10;margin-bottom:10;">
-                        <p>◦  Administrator: ' . $row_name['name'] . '</p>
-                        <p>◦ Description: ' . $row['eventdescription'] . '</p>
-                        <p>◦ Venue: ' . $row['eventvenue'] . '</p>
-                        <p>◦ Fee: $' . $row['eventfee'] . '</p>
-                        <p>◦ Date: ' . $row['date'] . '</p>
-                        <p>◦ Time: ' . $row['time'] . '</p>
-                        <div>Cancel the "'. $row['eventtitle'] .'" Event? </div>
-                        <form action="" method="POST">   
-                            <input type="hidden" name="eventid" value = '.$row['eventid'].' >
-                            <textarea id="cancelReason" name="cancellationReason" method="POST" placeholder="Explain the sudden cancellation of the event to the participants"></textarea>
-                            <br>
-                            <input type="submit" name="cancel" value="Cancel Event">
-                        </form>
-                    </div>
-                ';
+
+                $currentPage = basename($_SERVER['PHP_SELF'], ".php");
+                $excludePages = array("administratorReports");
+                if (!in_array($currentPage, $excludePages)) {
+                    // Output event details
+                    echo '
+                        <div class="the-event">
+                            <a href="events.php?eventid='.$row['eventid'].'">
+                                <h2 style="margin: 0;">'. $row['eventtitle'] .'</h2>
+                            </a>
+                            <hr style="margin-top:10;margin-bottom:10;">
+                            <p>◦ Administrator: ' . $row_name['name'] . '</p>
+                            <p>◦ Description: ' . $row['eventdescription'] . '</p>
+                            <p>◦ Venue: ' . $row['eventvenue'] . '</p>
+                            <p>◦ Fee: $' . $row['eventfee'] . '</p>
+                            <p>◦ Date: ' . $row['date'] . '</p>
+                            <p>◦ Time: ' . $row['time'] . '</p>
+                            <div>Cancel the "'. $row['eventtitle'] .'" Event? </div>
+                            <form action="" method="POST">
+                                <input type="hidden" name="eventid" value = '.$row['eventid'].' >
+                                <textarea id="cancelReason" name="cancellationReason" method="POST" placeholder="Explain the sudden cancellation of the event to the participants"></textarea>
+                                <br>
+                                <input type="submit" name="cancel" value="Cancel Event">
+                            </form>
+                        </div>
+                    ';
+                } else {
+                    echo '
+                        <div class="the-event">
+                            <table id="tblUserAccounts" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Event ID</th>
+                                        <th>Event Title</th>
+                                        <th>Administrator Name</th>
+                                        <th id="description">Description</th>
+                                        <th>Venue</th>
+                                        <th>Fee</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row = $row_name ?>
+                                    <tr>
+                                        <td>' . $row['eventid'] . '</td>
+                                        <td>' . $row['eventtitle'] . '</td>
+                                        <td>' . $row_name['name'] . '</td>
+                                        <td id="description">' . $row['eventdescription'] . '</td>
+                                        <td>' . $row['eventvenue'] . '</td>
+                                        <td>' . $row['eventfee'] . '</td>
+                                        <td>' . $row['date'] . '</td>
+                                        <td>' . $row['time'] . '</td>
+                                    </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    ';
+                }
             }
         } else {
-            echo 'No events found.';
+            echo '
+                <div class="body-container" style="height: 50vh; text-align: center;">
+                    No events found. Sad :(
+                </div>
+            ';
         }
     }
     if (isset($_POST['cancel'])) {
@@ -168,6 +217,167 @@
             echo "Event canceled successfully";
         } else {
             echo "Error canceling event: " . $connection->error;
+        }
+    }
+
+    function updateUser() {
+        global $connection;
+
+        // Check if all required fields are present
+        if(isset($_POST['update']) && isset($_POST['acctid']) && isset($_POST['email']) && isset($_POST['username']) && isset($_POST['password']) && isset($_POST['usertype'])) {
+            // Retrieve form data
+            $acctid = $_POST['acctid'];
+            $email = $_POST['email'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Hash the password
+            $usertype = $_POST['usertype'];
+
+            // Prepare update query
+            $sql = "UPDATE tbluseraccount SET emailadd=?, username=?, password=?, usertype=? WHERE acctid=?";
+            $stmt = $connection->prepare($sql);
+            $stmt->bind_param("ssssi", $email, $username, $hashed_password, $usertype, $acctid);
+
+            // Execute the update query
+            if ($stmt->execute()) {
+                echo '<script>alert("User data updated successfully");</script>';
+                echo '<script>window.location.href = "studentList.php";</script>';
+            } else {
+                echo "Error updating user data: " . $stmt->error;
+            }
+
+            // Close statement
+            $stmt->close();
+        } else {
+            echo "All fields are required for updating user data";
+        }
+    }
+
+    function getUserData($acctid) {
+        global $connection;
+
+        // Prepare query to fetch user data
+        $sql = "SELECT * FROM tbluseraccount WHERE acctid = ?";
+        $stmt = $connection->prepare($sql);
+        $stmt->bind_param("i", $acctid);
+
+        // Execute query
+        $stmt->execute();
+
+        // Get result
+        $result = $stmt->get_result();
+
+        // Fetch user data
+        $userData = $result->fetch_assoc();
+
+        // Close statement
+        $stmt->close();
+
+        return $userData;
+    }
+
+
+    /* I added a table in the reports to show the number of students for each program */
+    function displayUsersPerProgram() {
+        global $connection;
+
+        $query = "SELECT program, COUNT(program) AS count FROM tbluseraccount GROUP BY program";
+        $result = $connection->query($query);
+
+        if ($result->num_rows > 0) {
+            echo '
+                <table id="displayCountProg">
+                    <tr>
+                        <th>Program</th>
+                        <th>No. of accounts</th>
+                    </tr>
+            ';
+            while ($row = $result->fetch_assoc()) {
+                echo "<tr>";
+                    echo "<td>" . $row['program'] . "</td>";
+                    echo "<td>" . $row['count'] . "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+        } else {
+            echo '
+                <div class="body-container" style="height: 50vh; text-align: center;">
+                    No accounts! Sad :(
+                </div>
+            ';
+        }
+    }
+
+    /* table nis para participants per event */
+    function displayParticipantsPerEvent() {
+        global $connection;
+
+        $query = "SELECT e.eventtitle AS 'Event Name', a.name AS 'Admin', COUNT(aue.acctid) AS 'No. of participants', e.eventid
+                  FROM tblevent e
+                  JOIN tbladmin a ON e.adminid = a.adminid
+                  JOIN tbladminuserevent aue ON e.eventid = aue.eventid
+                  GROUP BY e.eventid
+                  ORDER BY e.eventtitle";
+        $result = $connection->query($query);
+
+        if ($result->num_rows > 0) {
+            echo '
+                <table>
+                    <tr>
+                        <th>Event ID</th>
+                        <th>Event Name</th>
+                        <th>Admin</th>
+                        <th>No. of participants</th>
+                    </tr>
+            ';
+            while ($row = $result->fetch_assoc()) {
+                echo '
+                    <tr>
+                        <td>' . $row['eventid'] . '</td>
+                        <td>' . $row['Event Name'] . '</td>
+                        <td>' . $row['Admin'] . '</td>
+                        <td>' . $row['No. of participants'] . '</td>
+                </tr>
+                ';
+            }
+            echo '</table>';
+        } else {
+            echo '
+                <div class="body-container" style="height: 50vh; text-align: center;">
+                    No events! Sad :(
+                </div>
+            ';
+        }
+    }
+
+    function displayUserEvents() {
+        global $connection;
+
+        $query = "SELECT e.eventid, e.eventtitle, ua.username, ue.status
+                  FROM tbluserevent ue
+                  INNER JOIN tbluseraccount ua ON ue.acctid = ua.acctid
+                  INNER JOIN tblevent e ON ue.eventid = e.eventid";
+
+        $result = $connection->query($query);
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo '
+                    <tr>
+                        <td>' . $row['eventid'] . '</td>
+                        <td>' . $row['username'] . '</td>
+                        <td>' . $row['eventtitle'] . '</td>
+                        <td>' . $row['status'] . '</td>
+                    </tr>
+                ';
+            }
+            echo '</table>';
+        } else {
+            echo '
+                <div class="body-container" style="height: 50vh; text-align: center;">
+                    No user events! Sad :(
+                </div>
+            ';
         }
     }
 ?>
